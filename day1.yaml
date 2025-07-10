@@ -1,0 +1,31 @@
+name: job 1
+
+on: 
+  push
+  # workflow_dispatch  # Uncomment this if you want to trigger manually
+
+jobs:
+  task-1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # ✅ Fixed: should use 'uses' instead of 'run'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Or your project's version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the code
+        run: npm run build
+
+      - name: Test the code
+        run: npm run test
+
+      - name: Start app with PM2
+        run: |
+          npm install -g pm2
+          pm2 start npm -- run dev
