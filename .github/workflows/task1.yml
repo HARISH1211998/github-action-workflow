@@ -1,6 +1,6 @@
 name: Two Type of Events
 
-on: [push, workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:
   lint:
