@@ -1,13 +1,12 @@
-name: Print GitHub Context on Issue Events test
+name: Print GitHub Context on Issue Events
 
-on: workflow_dispatch
-#  issues:
-#    types: [opened, edited, closed]
-  
+on:
+  issues:
+    types: [opened, edited, closed]
 
 jobs:
   show-context:
     runs-on: ubuntu-latest
     steps:
       - name: Print GitHub context
-        run: echo '${{ toJson(github) }}'
+        run: echo '${{ toJson(github.event) }}'
