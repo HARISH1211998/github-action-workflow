@@ -1,5 +1,5 @@
 name: Two Type of Events
-
+#push
 on: [workflow_dispatch]
 
 jobs:
