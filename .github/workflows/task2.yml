@@ -1,4 +1,4 @@
-name: Print GitHub Context on Issue Events
+name: Print GitHub Context on Issue Events test
 
 on:
   issues:
