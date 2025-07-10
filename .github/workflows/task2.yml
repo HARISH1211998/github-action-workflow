@@ -1,8 +1,9 @@
 name: Print GitHub Context on Issue Events test
 
-on:
-  issues:
-    types: [opened, edited, closed]
+on: workflow_dispatch
+#  issues:
+#    types: [opened, edited, closed]
+  
 
 jobs:
   show-context:
