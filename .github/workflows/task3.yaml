@@ -1,0 +1,84 @@
+## build job sets artifact-name=dist-files as an output.
+## deploy job uses ${{ needs.build.outputs.artifact-name }} to dynamically download and echo the artifact name.
+
+name: Events, Type and Activity
+
+on:
+  pull_request:
+    types: [opened, edited]
+    branches:
+      - main
+      - dev-*
+      - feature/*
+  push:
+    branches:
+      - main
+      - dev-*
+      - feature/*
+  workflow_dispatch:
+
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the GitHub repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Run linter
+        run: npm run lint
+
+  build:
+    runs-on: ubuntu-latest
+    needs: link
+    outputs:
+      artifact-name: ${{ steps.set-output.outputs.artifact_name }}
+    steps:
+      - name: Checkout the GitHub repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run build
+        run: npm run build
+
+      - name: Set output artifact name
+        id: set-output
+        run: echo "artifact_name=dist-files" >> $GITHUB_OUTPUT
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files
+          path: dist/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.build.outputs.artifact-name }}
+          path: dist
+
+      - name: Deploy step (e.g., copy files, FTP, SSH, etc.)
+        run: |
+          echo "Deploying artifact: ${{ needs.build.outputs.artifact-name }}"
+          ls -la dist/
